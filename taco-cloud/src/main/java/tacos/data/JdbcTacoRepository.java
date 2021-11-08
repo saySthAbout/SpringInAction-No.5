@@ -35,7 +35,7 @@ public class JdbcTacoRepository implements TacoRepository{
 	}
 	
 	private long saveTacoInfo(Taco taco) {
-		taco.setCreateAt(new Date());
+		taco.setCreatedAt(new Date());
 		PreparedStatementCreator psc = 
 			new PreparedStatementCreatorFactory(
 				"insert into Taco (name, createdAt) values (?, ?)",
@@ -43,7 +43,7 @@ public class JdbcTacoRepository implements TacoRepository{
 			).newPreparedStatementCreator(
 				Arrays.asList(
 					taco.getName(),
-					new Timestamp(taco.getCreateAt().getTime())));
+					new Timestamp(taco.getCreatedAt().getTime())));
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbc.update(psc, keyHolder);
