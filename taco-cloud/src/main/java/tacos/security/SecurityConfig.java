@@ -3,13 +3,16 @@ package tacos.security;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -17,6 +20,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	DataSource dataSource;
+	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Bean
+	public PasswordEncoder encoder() {
+		return new BCryptPasswordEncoder();
+	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -54,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 											"where username=?")
 				.passwordEncoder(new NoEncodingPasswordEncoder());
 		*/
-		auth
+		/*auth
 			.ldapAuthentication()
 			.userSearchBase("ou=people")
 			.userSearchFilter("(uid={0}")
@@ -67,6 +78,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.passwordCompare()
 			.passwordEncoder(new BCryptPasswordEncoder())
 			.passwordAttribute("userPasscode"); // 여기서는 classpath의 루트에서 users.ldif 파일을 찾아 LDAP 서버로 데이터를 로드하라고 요청한다.
+		*/
+		auth
+			.userDetailsService(userDetailsService)
+			.passwordEncoder(encoder());
+		
 	}
 	
     // Security 무시하기 
