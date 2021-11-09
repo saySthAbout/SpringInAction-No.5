@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -44,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.password("{noop}password2")
 			.authorities("ROLE_USER");
 		*/
-		auth
+		/*auth
 			.jdbcAuthentication()
 				.dataSource(dataSource)
 				.usersByUsernameQuery("select username, password, enabled from users" +
@@ -52,6 +53,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.authoritiesByUsernameQuery("select username, authority from authorities " +
 											"where username=?")
 				.passwordEncoder(new NoEncodingPasswordEncoder());
+		*/
+		auth
+			.ldapAuthentication()
+			.userSearchBase("ou=people")
+			.userSearchFilter("(uid={0}")
+			.groupSearchBase("ou=groups")
+			.groupSearchFilter("member={0}")
+			.contextSource()
+			.root("dc=tacocloud,dc=com")
+			.ldif("classpath:users.ldif")
+			.and()
+			.passwordCompare()
+			.passwordEncoder(new BCryptPasswordEncoder())
+			.passwordAttribute("userPasscode"); // 여기서는 classpath의 루트에서 users.ldif 파일을 찾아 LDAP 서버로 데이터를 로드하라고 요청한다.
 	}
 	
     // Security 무시하기 
