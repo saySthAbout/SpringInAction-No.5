@@ -36,14 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/design", "/orders")
 		.access("hasRole('ROLE_USER')")
 		.antMatchers("/", "/**").access("permitAll")
-		// 밑에 부분은 내가 임의로 추가한 코드이다.
-		.antMatchers("/h2-console/**").permitAll() // 추가
 		.and()
-            .csrf() // 추가
-            .ignoringAntMatchers("/h2-console/**").disable() // 추가
-            .httpBasic();
-		/*.and()
-			.httpBasic();*/
+		.formLogin()
+		.loginPage("/login");
 	}
 	
 	@Override
