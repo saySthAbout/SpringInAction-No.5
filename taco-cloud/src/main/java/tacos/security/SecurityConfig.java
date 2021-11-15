@@ -33,10 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 		.authorizeRequests()
-			.antMatchers("/design", "/orders")
-				.access("hasRole('ROLE_USER')")
-			.antMatchers("/", "/**").access("permitAll")
-			.antMatchers("/h2-console/**").permitAll() // 추가
+		.antMatchers("/design", "/orders")
+		.access("hasRole('ROLE_USER')")
+		.antMatchers("/", "/**").access("permitAll")
+		// 밑에 부분은 내가 임의로 추가한 코드이다.
+		.antMatchers("/h2-console/**").permitAll() // 추가
 		.and()
             .csrf() // 추가
             .ignoringAntMatchers("/h2-console/**").disable() // 추가
